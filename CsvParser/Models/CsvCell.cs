@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CsvParser.Models
 {
-    class CsvCell 
+	public class CsvCell 
     {
 		public string Value { get; set; }
 		public int MaxWidth { get; set; }

@@ -4,9 +4,15 @@ using System.Text;
 
 namespace CsvParser.Models
 {
-    class CsvRow
-    {
-		public List<CsvCell> Cells { get; set; }
-		public bool IsHeader { get; set; }
+	public class CsvRow
+	{
+		public CsvRow(bool isHeader=false)
+		{
+			IsHeader = isHeader;
+		}
+		private List<CsvCell> _cells;
+
+		public List<CsvCell> Cells { get => _cells;  }
+		public bool IsHeader { get; private set; }
 	}
 }

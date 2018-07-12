@@ -12,7 +12,8 @@ namespace ConsoleCvsParser
 		static void Main(string[] args)
 		{
 			//string s =@"C:\b2b_Widjets\CSV_Parser\CVS_Parser\ConsoleCvsParser\bin\Debug\ConsoleCvsParser.exe --file=[file1.csv]";
-			string path = @"c:\temp\file1.csv";
+
+				string path = @"c:\temp\file1.csv";
 
 			string input = Environment.CommandLine;
 			string pattern = "--file=[";
@@ -96,10 +97,13 @@ namespace ConsoleCvsParser
 
 		static void Print(List<List<string>> strL, string fName)
 		{
-			long unixTime = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
-
+			//long unixTime = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
+			//DateTimeOffset(now).ToUnixTimeSeconds()
+			//long unixTime2 = ; 
 			Console.WriteLine("File: {" + $"{fName}" + "}");
-			Console.WriteLine("Timestamp: {" + $"{unixTime}" + "}");
+			//Console.WriteLine("Timestamp: {" + $"{unixTime}" + "}");
+			Console.WriteLine("Timestamp: {" + $"{DateTimeOffset.Now.ToUnixTimeSeconds()}" + "}");
+
 			Console.WriteLine("------------------------------------------------------------");
 			foreach (List<string> row in strL)
 			{
