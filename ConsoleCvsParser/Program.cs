@@ -60,7 +60,7 @@ namespace ConsoleCvsParser
 					{
 						indexEnd = indexRowEnd;
 					}
-					//sb.Append($"[{csv.Substring(indexSatart, indexEnd)}]");
+					row.Add(csv.Substring(indexSatart, indexEnd));
 				}
 			}
 
