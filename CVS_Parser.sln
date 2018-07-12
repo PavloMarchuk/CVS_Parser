@@ -5,6 +5,11 @@ VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleCvsParser", "ConsoleCvsParser\ConsoleCvsParser.csproj", "{19DCA48D-BDF6-4BF4-98A5-AF3C1CF0AA7D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{905BACA1-49B9-427F-A180-F900FE075578}"
+	ProjectSection(SolutionItems) = preProject
+		ConsoleCvsParser\bin\Debug\file1.csv = ConsoleCvsParser\bin\Debug\file1.csv
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

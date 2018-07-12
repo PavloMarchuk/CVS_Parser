@@ -11,14 +11,21 @@ namespace ConsoleCvsParser
 	{
 		static void Main(string[] args)
 		{
-			//string s =@"C:\b2b_Widjets\CSV_Parser\CVS_Parser\ConsoleCvsParser\bin\Debug\ConsoleCvsParser.exe --file=[file_path]";
-
+			//string s =@"C:\b2b_Widjets\CSV_Parser\CVS_Parser\ConsoleCvsParser\bin\Debug\ConsoleCvsParser.exe --file=[file1.csv]";
+			string path = @"c:\temp\file1.csv";
 
 			string input = Environment.CommandLine;
 			string pattern = "--file=[";
-			Console.WriteLine(input);
 
-			string path = @"c:\temp\file1.csv";
+			int indexFileParam = input.IndexOf(pattern);
+			if (indexFileParam > 1)
+			{
+				int indexEndParam = input.IndexOf("]", indexFileParam);
+				path = Directory.GetCurrentDirectory()
+					+ @"\"
+					+ input.Substring(indexFileParam + pattern.Length, indexEndParam - (indexFileParam + pattern.Length));
+			}
+
 
 			if (!File.Exists(path))
 			{
@@ -32,6 +39,8 @@ namespace ConsoleCvsParser
 				};
 				File.WriteAllLines(path, createText);
 			}
+			//else { Console.WriteLine("file not found 404"); }
+
 
 			string readText = File.ReadAllText(path);
 			Print(Parser(readText), Path.GetFileName(path));
@@ -64,7 +73,6 @@ namespace ConsoleCvsParser
 					indexRowEnd = csv.IndexOf("\n", indexEnd) == -1 ? csv.Length : csv.IndexOf("\n", indexEnd);
 				}
 
-				//int tmp1 = csv.IndexOf(",", indexSatart);
 				if (indexEnd == -1 | indexEnd == indexRowEnd)
 				{
 					indexEnd = indexRowEnd;
@@ -102,6 +110,7 @@ namespace ConsoleCvsParser
 				Console.WriteLine();
 			}
 			Console.WriteLine("\n\n\n@Pavlo Marchuk +38(050)5519211");
+			Console.ReadLine();
 		}
 	}
 }
