@@ -16,7 +16,8 @@ namespace ConsoleCvsParser
 			if (!File.Exists(path))
 			{
 				string[] createText =
-					{
+				{
+					"Year, Make, Brand, Description, Price",
 					"1997,Ford,E350,\"ac, abs, moon\",3000.00",
 					"1999,Chevy,\"Venture \"\"Extended Edition\"\"\",,4900.00",
 					"1996,Jeep,Grand Cherokee,\"MUST SELL!",
@@ -24,15 +25,12 @@ namespace ConsoleCvsParser
 				};
 				File.WriteAllLines(path, createText);
 			}
-
+			
 			string readText = File.ReadAllText(path);
-
-			string result = Parser(readText);
-
-			//Console.WriteLine(result);
+			Print(Parser(readText));
 		}
 
-		static string Parser(string csv)
+		static List<List<string>> Parser(string csv)
 		{
 			List<List<string>> res = new List<List<string>>();
 			List<string> row = new List<string>();
@@ -50,24 +48,45 @@ namespace ConsoleCvsParser
 
 			while (indexSatart < csv.Length)
 			{
+				bool lastColl = false;
 				indexRowEnd = csv.IndexOf("\n", indexSatart) == -1 ?
 					csv.Length : csv.IndexOf("\n", indexSatart);
 
 				if (!(csv[0] == '\"'))
 				{
-					indexEnd = csv.IndexOf(",", indexSatart);
+					indexEnd = Math.Min(csv.IndexOf(",", indexSatart), indexRowEnd);
 					if (indexEnd == -1)
 					{
 						indexEnd = indexRowEnd;
+						lastColl = true;
 					}
-					row.Add(csv.Substring(indexSatart, indexEnd));
+					row.Add(csv.Substring(indexSatart, indexEnd - indexSatart));
+					indexSatart = indexEnd + 1;
+				}
+
+				if (lastColl)
+				{
+					res.Add(row);
+					row = new List<string>();
 				}
 			}
 
 
 
 
-			return "";
+			return res;
+		}
+
+		static void Print(List<List<string>> strL)
+		{
+			foreach (List<string> row in strL)
+			{
+				foreach (string str in row)
+				{
+					Console.Write($"[{row:20}] ");
+				}
+				Console.WriteLine();
+			}
 		}
 	}
 }
