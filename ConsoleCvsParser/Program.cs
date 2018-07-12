@@ -11,7 +11,21 @@ namespace ConsoleCvsParser
 	{
 		static void Main(string[] args)
 		{
+			//string s =@"C:\b2b_Widjets\CSV_Parser\CVS_Parser\ConsoleCvsParser\bin\Debug\ConsoleCvsParser.exe --file=[file1.csv]";
 			string path = @"c:\temp\file1.csv";
+
+			string input = Environment.CommandLine;
+			string pattern = "--file=[";
+
+			int indexFileParam = input.IndexOf(pattern);
+			if (indexFileParam > 1)
+			{
+				int indexEndParam = input.IndexOf("]", indexFileParam);
+				path = Directory.GetCurrentDirectory()
+					+ @"\"
+					+ input.Substring(indexFileParam + pattern.Length, indexEndParam - (indexFileParam + pattern.Length));
+			}
+
 
 			if (!File.Exists(path))
 			{
@@ -25,9 +39,11 @@ namespace ConsoleCvsParser
 				};
 				File.WriteAllLines(path, createText);
 			}
-			
+			//else { Console.WriteLine("file not found 404"); }
+
+
 			string readText = File.ReadAllText(path);
-			Print(Parser(readText));
+			Print(Parser(readText), Path.GetFileName(path));
 		}
 
 		static List<List<string>> Parser(string csv)
@@ -39,30 +55,35 @@ namespace ConsoleCvsParser
 			int indexEnd = 0;
 			int indexRowEnd = 0;
 
-
-			//int TMP = csv.IndexOf("\n");
-			//Console.WriteLine(TMP);
-			//TMP = csv.IndexOf("\n", TMP + 1);
-			//Console.WriteLine(TMP);
-			//Console.WriteLine(csv[TMP+1]);
-
 			while (indexSatart < csv.Length)
 			{
 				bool lastColl = false;
-				indexRowEnd = csv.IndexOf("\n", indexSatart) == -1 ?
-					csv.Length : csv.IndexOf("\n", indexSatart);
+				string delimiter = ",";
 
-				if (!(csv[0] == '\"'))
+				if (!(csv[indexSatart] == '\"'))
 				{
-					indexEnd = Math.Min(csv.IndexOf(",", indexSatart), indexRowEnd);
-					if (indexEnd == -1)
-					{
-						indexEnd = indexRowEnd;
-						lastColl = true;
-					}
-					row.Add(csv.Substring(indexSatart, indexEnd - indexSatart));
-					indexSatart = indexEnd + 1;
+					delimiter = ",";
+					indexRowEnd = csv.IndexOf("\n", indexSatart) == -1 ? csv.Length : csv.IndexOf("\n", indexSatart);
+					indexEnd = Math.Min(csv.IndexOf(delimiter, indexSatart), indexRowEnd);
 				}
+				else
+				{
+					delimiter = "\",";
+					indexEnd = csv.IndexOf(delimiter, indexSatart) == -1 ? csv.Length : csv.IndexOf(delimiter, indexSatart);
+					indexRowEnd = csv.IndexOf("\n", indexEnd) == -1 ? csv.Length : csv.IndexOf("\n", indexEnd);
+				}
+
+				if (indexEnd == -1 | indexEnd == indexRowEnd)
+				{
+					indexEnd = indexRowEnd;
+					lastColl = true;
+				}
+				int endRow = indexEnd == indexRowEnd ? 1 : 0;
+
+				row.Add(csv.
+					Substring(indexSatart + delimiter.Length - 1, indexEnd - (indexSatart + delimiter.Length - 1) - endRow)
+					.Replace("\"\"", "\""));
+				indexSatart = indexEnd + delimiter.Length;
 
 				if (lastColl)
 				{
@@ -70,23 +91,26 @@ namespace ConsoleCvsParser
 					row = new List<string>();
 				}
 			}
-
-
-
-
 			return res;
 		}
 
-		static void Print(List<List<string>> strL)
+		static void Print(List<List<string>> strL, string fName)
 		{
+			long unixTime = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
+
+			Console.WriteLine("File: {" + $"{fName}" + "}");
+			Console.WriteLine("Timestamp: {" + $"{unixTime}" + "}");
+			Console.WriteLine("------------------------------------------------------------");
 			foreach (List<string> row in strL)
 			{
 				foreach (string str in row)
 				{
-					Console.Write($"[{row:20}] ");
+					Console.Write($"{$"[{str}]",-30} ");
 				}
 				Console.WriteLine();
 			}
+			Console.WriteLine("\n\n\n@Pavlo Marchuk +38(050)5519211");
+			Console.ReadLine();
 		}
 	}
 }
