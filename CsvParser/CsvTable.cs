@@ -36,10 +36,13 @@ namespace CsvParser
 		private void Parser(string csv)
 		{
 			CsvRow row = new CsvRow(IsHeaderFirstFow);
+			CsvRow headerRow = new CsvRow(IsHeaderFirstFow);
 
+			int coll = 0;
 			int indexSatart = 0;
 			int indexEnd = 0;
 			int indexRowEnd = 0;
+
 
 			while (indexSatart < csv.Length)
 			{
@@ -71,13 +74,18 @@ namespace CsvParser
 					.Substring(indexSatart + delimiter.Length - 1, indexEnd - (indexSatart + delimiter.Length - 1) - endRow)
 					.Replace("\"\"", "\"")
 				});
-
+				if (headerRow.Cells[coll].MaxWidth< row.Cells[coll].Value.Length)
+				{
+					headerRow.Cells[coll].MaxWidth = row.Cells[coll].Value.Length;
+				}
+				coll++;
 				indexSatart = indexEnd + delimiter.Length;
 
 				if (lastColl)
 				{
 					_rows.Add(row);
 					row = new CsvRow();
+					coll = 0;
 				}
 			}
 			return;
